@@ -13,11 +13,22 @@ Soft
   ```
 - [vscode](https://code.visualstudio.com/docs/setup/linux#_rhel-fedora-and-centos-based-distributions)
   ```sh
+  sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+  echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee 
+  /etc/yum.repos.d/vscode.repo > /dev/null
+  ```
+  ```sh
   dnf check-update
   sudo dnf install code
   ```
 - [ya music](https://github.com/cucumber-sp/yandex-music-linux/releases)
-- [ya browser](https://browser.yandex.com)
+- [ya browser](https://yandex.ru/support2/browser/ru/about/install#browser-install)
+  ```sh
+  sudo rpmkeys --import https://repo.yandex.ru/yandex-browser/YANDEX-BROWSER-KEY.GPG
+  ```
+  ```sh
+  sudo dnf config-manager --add-repo http://repo.yandex.ru/yandex-browser/rpm/stable/x86_64
+  ```
 - [easy effects](https://github.com/wwmm/easyeffects)
   ```sh
   flatpak install flathub com.github.wwmm.easyeffects
@@ -25,6 +36,23 @@ Soft
 - [droidcam](https://www.dev47apps.com/droidcam/linux/)
   ```sh
   dnf install akmod-v4l2loopback
+  ```
+- [pano](https://github.com/oae/gnome-shell-pano)
+  ```sh
+  sudo dnf install libgda libgda-sqlite
+  ```
+- [discord](https://flathub.org/apps/com.discordapp.Discord)
+  ```sh
+  flatpak install flathub com.discordapp.Discord
+  ```
+- [vk teams](https://biz.mail.ru/teams/download/)
+- [openrgb](https://openrgb.org/)
+  ```sh
+  sudo dnf install openrgb
+  ```
+- [obs](https://obsproject.com/download#linux)
+  ```sh
+  sudo dnf install obs-studio
   ```
 Dev Dependencies
 - [go](https://go.dev/doc/install)
