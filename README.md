@@ -54,6 +54,12 @@ Soft
   ```sh
   sudo dnf install obs-studio
   ```
+- [vlc](https://discussion.fedoraproject.org/t/codec-no-longer-supported/99880)
+  ```sh
+  sudo dnf install obs-studio
+  sudo dnf autoremove
+  sudo dnf group upgrade --with-optional Multimedia --allowerasing
+  ```
 Dev Dependencies
 - [go](https://go.dev/doc/install)
 - [nvm](https://github.com/nvm-sh/nvm)
