@@ -56,7 +56,7 @@ Soft
   ```
 - [vlc](https://discussion.fedoraproject.org/t/codec-no-longer-supported/99880)
   ```sh
-  sudo dnf install obs-studio
+  sudo dnf install vlc
   sudo dnf autoremove
   sudo dnf group upgrade --with-optional Multimedia --allowerasing
   ```
