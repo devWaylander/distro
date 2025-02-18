@@ -1,11 +1,17 @@
 #!/bin/bash
 
-# Получаем последнюю версию Go с помощью API
-GO_VERSION=$(curl -s https://go.dev/VERSION?m=text | head -n 1)
+# Проверяем, установлен ли Go
+if command -v go &> /dev/null; then
+    echo "Go уже установлен. Версия: $(go version)"
+    exit 0
+fi
 
-# Проверяем, что версия Go найдена
-if [ -z "$GO_VERSION" ]; then
-    echo "Не удалось получить последнюю версию Go."
+# Получаем последнюю версию Go с помощью API
+GO_VERSION=$(curl -s --max-time 10 https://go.dev/VERSION?m=text | head -n 1)
+
+# Проверяем, что версия Go найдена и корректна
+if [[ -z "$GO_VERSION" || ! "$GO_VERSION" =~ ^go[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "Ошибка: Не удалось получить корректную версию Go. Проверьте URL или интернет-соединение."
     exit 1
 fi
 
@@ -13,18 +19,26 @@ fi
 GO_TAR="$GO_VERSION.linux-amd64.tar.gz"
 GO_DOWNLOAD_URL="https://go.dev/dl/$GO_TAR"
 
+# Проверяем, был ли скачан файл с Go
+if [ -f "$GO_TAR" ]; then
+    rm -f "$GO_TAR"
+fi
+
 echo "Загружаю $GO_DOWNLOAD_URL..."
 curl -LO "$GO_DOWNLOAD_URL"
 
-# Удаляем старую версию, если она есть
-sudo rm -rf /usr/local/go
+# Проверяем успешность загрузки
+if [ ! -f "$GO_TAR" ]; then
+    echo "Ошибка: Не удалось загрузить $GO_TAR."
+    exit 1
+fi
 
 # Распаковываем Go в /usr/local
 echo "Распаковываю Go..."
 sudo tar -C /usr/local -xzf "$GO_TAR"
 
 # Удаляем скачанный архив
-rm "$GO_TAR"
+rm -f "$GO_TAR"
 
 # Прописываем переменные среды в ~/.profile
 echo "Обновляю переменные среды в ~/.profile..."

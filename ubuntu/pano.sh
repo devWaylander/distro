@@ -1,39 +1,32 @@
 #!/bin/bash
 
-# URL страницы релизов
-RELEASES_URL="https://github.com/oae/gnome-shell-pano/releases"
-
-# Установка необходимых зависимостей
-echo "Устанавливаю зависимости..."
-sudo apt update
-sudo apt install -y gir1.2-gda-5.0 gir1.2-gsound-1.0
-
-echo "Получаю последнюю версию с меткой 'latest'..."
-LATEST_URL=$(curl -sL "$RELEASES_URL" | grep -oP 'href="\K[^"]+(?=")' | grep -E 'gnome-shell-pano-.*latest.*\.tar\.gz' | head -n 1)
-
-if [[ -z "$LATEST_URL" ]]; then
-    echo "Не удалось найти файл с меткой 'latest'. Проверьте URL или интернет-соединение."
-    exit 1
+# Убедитесь, что jq установлен
+if ! command -v jq &> /dev/null
+then
+    echo "jq не установлен, устанавливаю..."
+    sudo apt update && sudo apt install -y jq
 fi
 
-# Формируем полный URL для скачивания
-FULL_URL="https://github.com$LATEST_URL"
+# Получение URL для скачивания первого релиза из списка
+url=$(curl -s https://api.github.com/repos/oae/gnome-shell-pano/releases | jq -r '.[0].assets[0].browser_download_url')
 
-echo "Скачиваю $FULL_URL..."
-TMP_FILE=$(mktemp --suffix=.tar.gz)
+# Скачивание расширения
+echo "Скачиваю расширение..."
+curl -L -o gnome-shell-pano.zip "$url"
 
-curl -L -o "$TMP_FILE" "$FULL_URL"
+# Определение папки для установки
+extension_folder="/home/$SUDO_USER/.local/share/gnome-shell/extensions/pano@elhan.io"
 
-echo "Распаковываю файл..."
-# Распаковка архива
-tar -xvzf "$TMP_FILE" -C /tmp
+# Распаковка расширения в нужную директорию
+echo "Распаковываю расширение..."
+mkdir -p "$extension_folder"
+unzip gnome-shell-pano.zip -d "$extension_folder"
 
-# Устанавливаем в нужное место (если нужно, например, в /usr/local)
-echo "Устанавливаю Gnome Shell Pano..."
-# Пример установки, смотрите инструкции в README репозитория
-sudo mv /tmp/gnome-shell-pano-*/ /usr/local/share/gnome-shell/extensions/
+# Включение расширения
+echo "Включаю расширение..."
+gnome-extensions enable pano@elhan.io
 
-# Удаляем временный файл
-rm -f "$TMP_FILE"
+# Очистка
+rm gnome-shell-pano.zip
 
-echo "Установка завершена! Перезапустите Gnome Shell или перезагрузите систему."
+echo "Установка завершена!"

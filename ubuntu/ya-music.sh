@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# URL страницы релизов
-RELEASES_URL="https://github.com/cucumber-sp/yandex-music-linux/releases"
+# URL для API GitHub
+API_URL="https://api.github.com/repos/cucumber-sp/yandex-music-linux/releases/latest"
 
 echo "Получаю последнюю версию Yandex Music..."
-LATEST_VERSION=$(curl -sL "$RELEASES_URL" | grep -oP 'yandex-music_\K[0-9.]+(?=_amd64\.deb)' | head -n 1)
+LATEST_VERSION=$(curl -sL "$API_URL" | jq -r '.tag_name' | sed 's/^v//')
 
 if [[ -z "$LATEST_VERSION" ]]; then
-    echo "Не удалось найти последнюю версию. Проверьте URL или интернет-соединение."
+    echo "Не удалось найти последнюю версию. Проверьте API или интернет-соединение."
     exit 1
 fi
 

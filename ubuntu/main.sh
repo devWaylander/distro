@@ -46,7 +46,10 @@ echo "Запуск главного скрипта для установки..."
 # Проходим по всем скриптам и выполняем их
 for script in "${scripts[@]}"; do
   echo "Запуск $script..."
-  yes | ./$script
+  if ! yes | ./$script; then
+    echo "Ошибка при выполнении $script. Прерывание."
+    exit 1
+  fi
 done
 
 echo "Все скрипты выполнены успешно!"
