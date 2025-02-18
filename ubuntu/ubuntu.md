@@ -13,6 +13,7 @@ Soft
 - [vk teams](vkteams.sh)
 - [openrgb](openrgb.sh)
 - [vlc](vlc.sh)
+
 Dev Dependencies
 - [go](go.sh)
 - [go update](go-update.sh)
