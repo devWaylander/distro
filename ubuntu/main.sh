@@ -35,6 +35,7 @@ scripts=(
   "vscode.sh"
   "go.sh"
   "nvm.sh"
+  "ssh-import.sh"
 )
 
 echo "Запуск главного скрипта для установки..."
