@@ -53,3 +53,14 @@ for script in "${scripts[@]}"; do
 done
 
 echo "Все скрипты выполнены успешно!"
+
+# Установка и обновление GRUB
+echo "Установка GRUB на диск /dev/sdX..."
+sudo grub-install /dev/sdX
+check_error "Установка GRUB"
+
+echo "Обновление конфигурации GRUB..."
+sudo update-grub
+check_error "Обновление конфигурации GRUB"
+
+echo "GRUB установлен и обновлен успешно!"
