@@ -1,3 +1,3 @@
 #!/bin/bash
 
-flatpak install flathub com.obsproject.Studio
+flatpak install -y flathub com.obsproject.Studio

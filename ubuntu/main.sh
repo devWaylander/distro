@@ -19,6 +19,7 @@ fi
 
 # Массив с именами скриптов
 scripts=(
+  "ttf-mscorefonts-installer.sh"
   "antaressql.sh"
   "docker.sh"
   "easy-effects.sh"
@@ -61,6 +62,5 @@ check_error "Установка GRUB"
 
 echo "Обновление конфигурации GRUB..."
 sudo update-grub
-check_error "Обновление конфигурации GRUB"
 
 echo "GRUB установлен и обновлен успешно!"
