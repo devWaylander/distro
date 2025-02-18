@@ -56,11 +56,33 @@ done
 echo "Все скрипты выполнены успешно!"
 
 # Установка и обновление GRUB
-echo "Установка GRUB на диск /dev/sdX..."
-sudo grub-install /dev/sdX
-check_error "Установка GRUB"
+# Определяем системный диск (где смонтирован корень "/")
+SYSTEM_DISK=$(lsblk -no PKNAME $(df / | awk 'NR==2 {print $1}'))
 
+if [ -z "$SYSTEM_DISK" ]; then
+    echo "Ошибка: Не удалось определить системный диск!"
+    exit 1
+fi
+
+SYSTEM_DISK="/dev/$SYSTEM_DISK"
+echo "Определён системный диск: $SYSTEM_DISK"
+
+# Проверяем, есть ли строка GRUB_DISABLE_OS_PROBER в /etc/default/grub
+if grep -q "^GRUB_DISABLE_OS_PROBER" /etc/default/grub; then
+    # Если строка есть, заменяем true на false
+    sudo sed -i 's/^GRUB_DISABLE_OS_PROBER=.*/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub
+else
+    # Если строки нет, добавляем её в конец файла
+    echo "GRUB_DISABLE_OS_PROBER=false" | sudo tee -a /etc/default/grub
+fi
+
+# Устанавливаем GRUB на системный диск
+echo "Установка GRUB на $SYSTEM_DISK..."
+sudo grub-install "$SYSTEM_DISK"
+
+# Обновляем конфигурацию GRUB
 echo "Обновление конфигурации GRUB..."
 sudo update-grub
 
-echo "GRUB установлен и обновлен успешно!"
+echo "Готово! Перезагрузите компьютер, чтобы проверить GRUB."
+

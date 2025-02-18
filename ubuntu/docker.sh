@@ -26,6 +26,10 @@ sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plug
 echo "Добавляю пользователя в группу docker для использования без root..."
 sudo usermod -aG docker "$USER"
 
+# Запуск docker в режиме no-root
+sudo apt-get install -y uidmap
+dockerd-rootless-setuptool.sh instal
+
 # Проверяем успешность установки Docker
 newgrp docker <<EOC
     docker run hello-world
