@@ -7,4 +7,7 @@ wget https://openrgb.org/releases/release_0.9/openrgb_0.9_amd64_bullseye_b5f46e3
 sudo dpkg -i openrgb_0.9_amd64_bullseye_b5f46e3.deb
 
 # Если возникли проблемы с зависимостями, исправляем их
-sudo apt --fix-broken install
+sudo apt --fix-broken install -y
+
+# Удаляем скачанный .deb пакет после установки
+rm -f openrgb_0.9_amd64_bullseye_b5f46e3.deb

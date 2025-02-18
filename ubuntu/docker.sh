@@ -2,27 +2,35 @@
 
 # Обновляем пакеты и устанавливаем необходимые зависимости
 sudo apt-get update
-sudo apt-get install ca-certificates curl
+sudo apt-get install -y ca-certificates curl
+
+# Создаём каталог для ключей APT, если он отсутствует
 sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+
+# Загружаем и добавляем GPG-ключ Docker
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.asc > /dev/null
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-# Добавляем репозиторий Docker в источники APT
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Определяем версию Ubuntu и добавляем репозиторий Docker
+. /etc/os-release
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $VERSION_CODENAME stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Обновляем списки пакетов
 sudo apt-get update
 
 # Устанавливаем Docker и необходимые компоненты
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Настроим Docker для работы без root (добавим пользователя в группу docker)
+# Добавляем текущего пользователя в группу docker (чтобы не использовать sudo при запуске контейнеров)
 echo "Добавляю пользователя в группу docker для использования без root..."
-sudo usermod -aG docker $USER
+sudo usermod -aG docker "$USER"
 
-# Подаем команду для проверки установки Docker
-sudo docker run hello-world
+# Проверяем успешность установки Docker
+newgrp docker <<EOC
+    docker run hello-world
+EOC
 
-# Сообщение о необходимости перезагрузки или выхода из системы
-echo "Чтобы изменения вступили в силу, необходимо выйти из системы и войти снова (или перезагрузить систему)."
+# Выводим сообщение о необходимости выхода из системы или перезагрузки
+echo "Чтобы изменения вступили в силу, выйдите из системы и войдите снова (или перезагрузите систему)."
+
