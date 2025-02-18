@@ -1,12 +1,15 @@
 #!/bin/bash
 
+USER_HOME=$(eval echo ~$SUDO_USER)
+PROFILE_FILE="$USER_HOME/.profile"
+
 # Проверяем, установлен ли Go
-if command -v go &> /dev/null; then
-    echo "Go уже установлен. Версия: $(go version)"
+if sudo -u "$SUDO_USER" command -v go &> /dev/null; then
+    echo "Go уже установлен. Версия: $(sudo -u "$SUDO_USER" go version)"
     exit 0
 fi
 
-# Получаем последнюю версию Go с помощью API
+# Получаем последнюю версию Go
 GO_VERSION=$(curl -s --max-time 10 https://go.dev/VERSION?m=text | head -n 1)
 
 # Проверяем, что версия Go найдена и корректна
@@ -35,25 +38,21 @@ fi
 
 # Распаковываем Go в /usr/local
 echo "Распаковываю Go..."
-sudo tar -C /usr/local -xzf "$GO_TAR"
+tar -C /usr/local -xzf "$GO_TAR"
 
 # Удаляем скачанный архив
 rm -f "$GO_TAR"
 
-# Прописываем переменные среды в ~/.profile
-echo "Обновляю переменные среды в ~/.profile..."
-PROFILE_FILE="$HOME/.profile"
+# Прописываем переменные среды в ~/.profile пользователя
+echo "Обновляю переменные среды в $PROFILE_FILE..."
+sudo -u "$SUDO_USER" bash -c "echo -e '\n# Go Environment Variables' >> $PROFILE_FILE"
+sudo -u "$SUDO_USER" bash -c "echo 'export GOROOT=/usr/local/go' >> $PROFILE_FILE"
+sudo -u "$SUDO_USER" bash -c "echo 'export GOPATH=\$HOME/go' >> $PROFILE_FILE"
+sudo -u "$SUDO_USER" bash -c "echo 'export PATH=\$PATH:\$GOROOT/bin:\$GOPATH/bin' >> $PROFILE_FILE"
 
-if ! grep -q "GOROOT" "$PROFILE_FILE"; then
-    echo -e "\n# Go Environment Variables" >> "$PROFILE_FILE"
-    echo "export GOROOT=/usr/local/go" >> "$PROFILE_FILE"
-    echo "export GOPATH=\$HOME/go" >> "$PROFILE_FILE"
-    echo "export PATH=\$PATH:\$GOROOT/bin:\$GOPATH/bin" >> "$PROFILE_FILE"
-fi
-
-# Применяем изменения в текущей сессии
-source "$PROFILE_FILE"
+# Применяем изменения
+sudo -u "$SUDO_USER" bash -c "source $PROFILE_FILE"
 
 # Проверяем установленную версию Go
-echo "Go установлен. Версия Go:"
-go version
+sudo -u "$SUDO_USER" bash -c "source $PROFILE_FILE && echo 'Go установлен. Версия:' && go version"
+

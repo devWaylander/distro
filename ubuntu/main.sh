@@ -24,7 +24,8 @@ scripts=(
   "docker.sh"
   "easy-effects.sh"
   "obsidian.sh"
-  "openrgb.sh"
+  # broken
+  # "openrgb.sh"
   "vlc.sh"
   "ya-browser.sh"
   "discord.sh"
