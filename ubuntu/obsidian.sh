@@ -1,3 +1,3 @@
 #!/bin/bash
 
-flatpak install flathub md.obsidian.Obsidian
+flatpak install -y flathub md.obsidian.Obsidian --assumeyes

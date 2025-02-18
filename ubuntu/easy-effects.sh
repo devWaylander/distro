@@ -1,3 +1,3 @@
 #!/bin/bash
 
-flatpak install flathub com.github.wwmm.easyeffects
+flatpak install -y flathub com.github.wwmm.easyeffects --assumeyes

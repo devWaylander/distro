@@ -1,3 +1,3 @@
 #!/bin/bash
 
-flatpak install flathub it.fabiodistasio.AntaresSQL
+flatpak install -y flathub it.fabiodistasio.AntaresSQL

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Получаем последнюю версию Go с официального сайта
-GO_VERSION=$(curl -s https://golang.org/dl/ | grep -oP 'go[0-9]+\.[0-9]+\.[0-9]+\.linux-amd64.tar.gz' | head -n 1)
+# Получаем последнюю версию Go с помощью API
+GO_VERSION=$(curl -s https://go.dev/VERSION?m=text | head -n 1)
 
 # Проверяем, что версия Go найдена
 if [ -z "$GO_VERSION" ]; then
@@ -9,17 +9,22 @@ if [ -z "$GO_VERSION" ]; then
     exit 1
 fi
 
-# Загружаем архив с последней версией Go
-GO_DOWNLOAD_URL="https://golang.org/dl/$GO_VERSION"
+# Формируем URL для загрузки
+GO_TAR="$GO_VERSION.linux-amd64.tar.gz"
+GO_DOWNLOAD_URL="https://go.dev/dl/$GO_TAR"
+
 echo "Загружаю $GO_DOWNLOAD_URL..."
 curl -LO "$GO_DOWNLOAD_URL"
 
-# Распаковываем архив
+# Удаляем старую версию, если она есть
+sudo rm -rf /usr/local/go
+
+# Распаковываем Go в /usr/local
 echo "Распаковываю Go..."
-sudo tar -C /usr/local -xzf "$GO_VERSION"
+sudo tar -C /usr/local -xzf "$GO_TAR"
 
 # Удаляем скачанный архив
-rm "$GO_VERSION"
+rm "$GO_TAR"
 
 # Прописываем переменные среды в ~/.profile
 echo "Обновляю переменные среды в ~/.profile..."
