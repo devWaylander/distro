@@ -40,7 +40,7 @@ check_exit_status "rm"
 # Создаём ярлык для удобного запуска
 echo "[Desktop Entry]
 Name=VK Teams
-Exec=$INSTALL_DIR/vkteams
+Exec=$INSTALL_DIR/vkteams --disable-gpu
 Type=Application
 Categories=Network;" > "$USER_HOME/.local/share/applications/vkteams.desktop"
 check_exit_status "echo (desktop entry)"
@@ -53,4 +53,4 @@ echo "Создаю символическую ссылку для команды
 sudo ln -sf "$INSTALL_DIR/vkteams" "$BIN_DIR/vkteams"
 check_exit_status "ln"
 
-echo "Установка завершена! Запустить можно командой: vkteams"
+echo "Установка завершена! Запустить можно командой: vkteams --disable-gpu"
