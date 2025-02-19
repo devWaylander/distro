@@ -50,7 +50,9 @@ check_exit_status "chmod"
 
 # Создаём симлинк для команды vkteams
 echo "Создаю символическую ссылку для команды vkteams..."
-sudo ln -sf "$INSTALL_DIR/vkteams" "$BIN_DIR/vkteams"
+echo "#!/bin/bash
+$INSTALL_DIR/vkteams --disable-gpu" | sudo tee "$BIN_DIR/vkteams" > /dev/null
+sudo chmod +x "$BIN_DIR/vkteams"
 check_exit_status "ln"
 
-echo "Установка завершена! Запустить можно командой: vkteams --disable-gpu"
+echo "Установка завершена! Запустить можно командой: vkteams"
