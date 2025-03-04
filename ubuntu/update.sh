@@ -1,3 +1,3 @@
 #!/bin/bash
-flatpak update
+flatpak update -y
 bash ya-music.sh
